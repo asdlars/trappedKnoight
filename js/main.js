@@ -5,8 +5,8 @@
 
 //Config
 config = {
-  gridWidth: 9,
-  gridHeight: 9,
+  gridWidth: 61,
+  gridHeight: 61,
   maxSteps: 2015,
   maxSquare: 5000,
   minSquare: -1

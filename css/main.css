@@ -2,14 +2,15 @@
   margin: 0 auto;
 }
 .bloque {
-    outline: 1px solid green;
-    width: 20px;
-    height: 20px;
-    float: left;
-    font-size: 0.5em;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  float: left;
+  font-size: 0.5em;
+  color: #333;
 }
 .been-there {
-  background-color: darkgreen;
+  /*background-color: darkgreen;*/
 }
 .toy-aca {
   background-color: darkblue;

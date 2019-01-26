@@ -180,8 +180,8 @@ function getLowestSquare() {
   for (var i=0 ; i<possibleSquares.length-1 ; i++) {
     lowestNum = Math.floor(lowestNum)<0 ? config.maxSquare : Math.floor(lowestNum)
     nextNum =  Math.floor(possibleSquares[i+1])<0 ? config.maxSquare : Math.floor(possibleSquares[i+1])
-    lowestNum = Math.floor(lowestNum)>Math.floor(nextNum) ? Math.floor(lowestNum) : Math.floor(nextNum)
-    console.log("comparing ",lowestNum, " to ",possibleSquares[i+1]," lowest was ",lowestNum);
+    lowestNum = Math.floor(lowestNum)<Math.floor(nextNum) ? Math.floor(lowestNum) : Math.floor(nextNum)
+    //console.log("comparing ",lowestNum, " to ",possibleSquares[i+1]," lowest was ",lowestNum);
   }
   //console.log("lowestNum",lowestNum);
   return Math.floor(lowestNum)

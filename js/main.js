@@ -1,54 +1,70 @@
+// IDEA: use background color gradient to mark path instead of lines, might be simpler and could be pretty :3
+
+
 //Config
 config = {
-  numLimit: 15,
-  gridWidth: 8,
-  gridHeight: 8
+  gridWidth: 91,
+  gridHeight: 91,
 }
 
 //board vars
+center = Math.floor((Math.floor(config.gridWidth*config.gridHeight/2)))
+//console.log("CENTER",center);
 currentPosition = 0
+possibleSquares = []
+possibleBlocks = []
+stepNumba = 0
 
 //FUNCTIONS!!!
 
 //Move on board
 function up(b) {
-  console.log("UP")
-    b = b-config.gridWidth
-      return b
-    }
+  //console.log("UP")
+  b = Math.floor(b)-config.gridWidth
+  return b
+}
 function down(b) {
-  console.log("DOWN")
-    b = b+config.gridWidth
-      return b
-    }
+  //console.log("DOWN")
+  b = Math.floor(b)+config.gridWidth
+  return b
+}
 function left(b) {
-  console.log("LEFT")
-    b = b-1
-      return b
-    }
+  //console.log("LEFT")
+  b = Math.floor(b)-1
+  return b
+}
 function right(b) {
-  console.log("RIGHT")
-    b = b+1
-      return b
-    }
+  //console.log("RIGHT")
+  b = Math.floor(b)+1
+  return b
+}
 function stay(b) {
-  currentPos(b)
-  console.log("STAY")
-    return b
+  currentBloq(b)
+  //console.log("STAY")
+  return b
 }
 
 //DirectionA and DirectionB in a movement "up, up, up, left", up would be dirA and left dirB
 function horseMove(dirA,dirB) {
-  dirA()
-  dirA()
-  dirA()
-  dirB()
+  p = currentPosition
+  /*
+  console.log("Starting in :: ",getSquareFormBloq(p));
+  step1 = dirA(p)
+  console.log("step1 :: ",getSquareFormBloq(step1));
+  step2 = dirA(step1)
+  console.log("step2 :: ",getSquareFormBloq(step2));
+  step3 = dirB(step2)
+  console.log("step3 :: ",getSquareFormBloq(step3));
+  horseDestination = step3
+  */
+  horseDestination = Math.floor(dirA(dirA(dirB(p))))
+  return horseDestination
 }
 
 function addArrElements(elem,arr,amount) {
   //Add N elements to X array
   //console.log("add ",elem," ",amount," times")
-    for (i=0;i<amount;i++) {
+    for (var i=0;i<amount;i++) {
     arr.push(elem)
   }
 }
@@ -93,8 +109,8 @@ function makeSpiral(direction) {
 function markRoute(start,route) {
   //35 is center for 8x8
   var bloqNum = 0
-    var currBloq = start
-  for (i=0;i<route.length;i++) {
+  var currBloq = start
+  for (var i=0;i<route.length;i++) {
     currBloq = route[i](currBloq)
     $('#bloque-'+currBloq).text((bloqNum+1).toString())
     $('#bloque-'+currBloq).attr("square",(bloqNum+1).toString())
@@ -102,12 +118,92 @@ function markRoute(start,route) {
   }
 }
 
-function getPossibleSquares(mySquare) {
 
+function getPossibleBlocks() {
+  possibleBlocks = [
+    horseMove(up,left),
+    horseMove(up,right),
+    horseMove(down,left),
+    horseMove(down,right),
+    horseMove(right,up),
+    horseMove(right,down),
+    horseMove(left,up),
+    horseMove(left,down)
+  ]
+  return possibleBlocks
 }
 
-function currentPos(bloq) {
-  $('#bloque-'+bloq).attr("currentBloq");
+function getPossibleSquares() {
+  possibleSquares = [
+    $('#bloque-'+horseMove(down,left)).attr("square"),
+    $('#bloque-'+horseMove(down,right)).attr("square"),
+    $('#bloque-'+horseMove(up,left)).attr("square"),
+    $('#bloque-'+horseMove(up,right)).attr("square"),
+    $('#bloque-'+horseMove(right,up)).attr("square"),
+    $('#bloque-'+horseMove(right,down)).attr("square"),
+    $('#bloque-'+horseMove(left,up)).attr("square"),
+    $('#bloque-'+horseMove(left,down)).attr("square")
+  ]
+  return possibleSquares
+}
+
+function sanitizePossibleSquares(arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i] = $('[square='+arr[i]+']').length ? arr[i] : arr[i]=99999999999
+  }
+  //console.log("quedaron :: ",arr);
+}
+
+function removeVisitedSquares(arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i] = $('[square='+arr[i]+']').hasClass('been-there') ? arr[i]=99999999999 : arr[i]
+  }
+  //console.log("quedaron :: ",arr);
+}
+
+function nextSquare() {
+  getPossibleSquares()
+  sanitizePossibleSquares(possibleSquares)
+  removeVisitedSquares(possibleSquares)
+  nextPos = getLowestSquare()
+  moveToSquare(nextPos)
+}
+
+function getLowestSquare() {
+  lowestNum = possibleSquares[0]
+  //console.log("lowestNum pre loop",lowestNum);
+  for (var i=0 ; i<possibleSquares.length-1 ; i++) {
+    lowestNum = Math.floor(lowestNum)<0 ? 99999999999 : Math.floor(lowestNum)
+    nextNum =  Math.floor(possibleSquares[i+1])<0 ? 99999999999 : Math.floor(possibleSquares[i+1])
+    lowestNum = Math.floor(lowestNum)<Math.floor(nextNum) ? Math.floor(lowestNum) : Math.floor(nextNum)
+    //console.log("comparing ",lowestNum, " to ",possibleSquares[i+1]," lowest was ",lowestNum);
+  }
+  //console.log("lowestNum",lowestNum);
+  return Math.floor(lowestNum)
+}
+
+function getSquareFormBloq(bloq) {
+  square = $('#bloque-'+bloq).attr("square");
+  return square
+}
+
+function getBloqFromSquare(square) {
+  bloq = $('[square='+square+']').attr('id').replace('bloque-','');
+  return bloq
+}
+
+function moveToSquare(square) {
+  nuPosition = getBloqFromSquare(square)
+  currentPosition = nuPosition
+  currentBloq(nuPosition)
+  stepNumba++
+  $('#move').text(stepNumba)
+  console.log("Now we are on :: ",square);
+}
+
+function currentBloq(bloq) {
+  currentPosition = bloq
+  $('#bloque-'+bloq).attr("currentSquare");
   $('#bloque-'+bloq).addClass("been-there");
   $('#bloque-'+bloq).addClass("toy-aca");
 }
@@ -115,14 +211,28 @@ function currentPos(bloq) {
 //Creates an element X times inside another element
 // TODO: Add argument for parameter allowing to select where to repeate and what to repeat
 function repeater(cantidad) {
-  for (i=0;i<cantidad;i++) {
+  for (var i=0;i<cantidad;i++) {
     $('#canvas').append("<div class='bloque' id='bloque-"+i+"'></div>")
   }
 }
 
+
+function go() {
+  var vamo = setInterval(function() { nextSquare() }, 50);
+}
+
 //In the beginning...
 function init() {
+  $('#canvas').css("width", config.gridWidth*20+"px");
   repeater(config.gridHeight*config.gridWidth)//Creates a grid according to config
   makeSpiral("clockwise")//Creates new clockwise spiral "newSpiral"
-  markRoute(35,newSpiral)
+  markRoute(center,newSpiral)//Mark the board using X square as starting point and Y route
+  currentBloq(center)//Set current position based on starting bloq
+  $('#next').on('click', function() {
+    go()
+  })
+  $('#stop').on('click', function() {
+    clearInterval(vamo);
+    console.log("STAHPPED");
+  })
 }

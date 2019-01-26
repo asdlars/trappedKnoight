@@ -3,8 +3,8 @@
 
 //Config
 config = {
-  gridWidth: 91,
-  gridHeight: 91,
+  gridWidth: 61,
+  gridHeight: 61,
 }
 
 //board vars

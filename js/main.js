@@ -194,6 +194,18 @@ function getLowestSquare() {
   return Math.floor(lowestNum)
 }
 
+function getHighestSquare() {
+  lowestNum = possibleSquares[0]
+  //console.log("lowestNum pre loop",lowestNum);
+  for (var i=0 ; i<possibleSquares.length-1 ; i++) {
+    nextNum = Math.floor(possibleSquares[i+1])
+    lowestNum = Math.floor(lowestNum)>Math.floor(nextNum) ? Math.floor(lowestNum) : Math.floor(nextNum)
+    console.log("comparing ",lowestNum, " to ",possibleSquares[i+1]," lowest was ",lowestNum);
+  }
+  console.log("lowestNum",lowestNum);
+  return Math.floor(lowestNum)
+}
+
 function getSquareFormBloq(bloq) {
   square = $('#bloque-'+bloq).attr("square");
   return square

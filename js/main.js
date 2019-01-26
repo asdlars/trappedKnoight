@@ -1,19 +1,24 @@
-// IDEA: use background color gradient to mark path instead of lines, might be simpler and could be pretty :3
-
+// TODO: Throw error "I'm trapped!"
+// Speed selector
+// isometric field with colored cubes poping up
+// calculate farthest travel from center
 
 //Config
 config = {
   gridWidth: 61,
   gridHeight: 61,
+  maxSteps: 2015,
+  maxSquare: 5000
 }
 
 //board vars
-center = Math.floor((Math.floor(config.gridWidth*config.gridHeight/2)))
+var center = Math.floor((Math.floor(config.gridWidth*config.gridHeight/2)))
 //console.log("CENTER",center);
-currentPosition = 0
-possibleSquares = []
-possibleBlocks = []
-stepNumba = 0
+var goInterval = ""
+var currentPosition = 0
+var possibleSquares = []
+var possibleBlocks = []
+var stepNumba = 0
 
 //FUNCTIONS!!!
 
@@ -112,7 +117,7 @@ function markRoute(start,route) {
   var currBloq = start
   for (var i=0;i<route.length;i++) {
     currBloq = route[i](currBloq)
-    $('#bloque-'+currBloq).text((bloqNum+1).toString())
+    //$('#bloque-'+currBloq).text((bloqNum+1).toString())
     $('#bloque-'+currBloq).attr("square",(bloqNum+1).toString())
     bloqNum++
   }
@@ -149,14 +154,14 @@ function getPossibleSquares() {
 
 function sanitizePossibleSquares(arr) {
   for (var i = 0; i < arr.length; i++) {
-    arr[i] = $('[square='+arr[i]+']').length ? arr[i] : arr[i]=99999999999
+    arr[i] = $('[square='+arr[i]+']').length ? arr[i] : arr[i]=config.maxSquare
   }
   //console.log("quedaron :: ",arr);
 }
 
 function removeVisitedSquares(arr) {
   for (var i = 0; i < arr.length; i++) {
-    arr[i] = $('[square='+arr[i]+']').hasClass('been-there') ? arr[i]=99999999999 : arr[i]
+    arr[i] = $('[square='+arr[i]+']').hasClass('been-there') ? arr[i]=config.maxSquare : arr[i]
   }
   //console.log("quedaron :: ",arr);
 }
@@ -173,10 +178,10 @@ function getLowestSquare() {
   lowestNum = possibleSquares[0]
   //console.log("lowestNum pre loop",lowestNum);
   for (var i=0 ; i<possibleSquares.length-1 ; i++) {
-    lowestNum = Math.floor(lowestNum)<0 ? 99999999999 : Math.floor(lowestNum)
-    nextNum =  Math.floor(possibleSquares[i+1])<0 ? 99999999999 : Math.floor(possibleSquares[i+1])
-    lowestNum = Math.floor(lowestNum)<Math.floor(nextNum) ? Math.floor(lowestNum) : Math.floor(nextNum)
-    //console.log("comparing ",lowestNum, " to ",possibleSquares[i+1]," lowest was ",lowestNum);
+    lowestNum = Math.floor(lowestNum)<0 ? config.maxSquare : Math.floor(lowestNum)
+    nextNum =  Math.floor(possibleSquares[i+1])<0 ? config.maxSquare : Math.floor(possibleSquares[i+1])
+    lowestNum = Math.floor(lowestNum)>Math.floor(nextNum) ? Math.floor(lowestNum) : Math.floor(nextNum)
+    console.log("comparing ",lowestNum, " to ",possibleSquares[i+1]," lowest was ",lowestNum);
   }
   //console.log("lowestNum",lowestNum);
   return Math.floor(lowestNum)
@@ -193,19 +198,24 @@ function getBloqFromSquare(square) {
 }
 
 function moveToSquare(square) {
+  if (stepNumba>=config.maxSteps) {
+    stahp()
+  }
   nuPosition = getBloqFromSquare(square)
   currentPosition = nuPosition
   currentBloq(nuPosition)
   stepNumba++
   $('#move').text(stepNumba)
-  console.log("Now we are on :: ",square);
+  $('#currentNum').text(square)
+  //console.log("Now we are on :: ",square);
 }
 
 function currentBloq(bloq) {
   currentPosition = bloq
-  $('#bloque-'+bloq).attr("currentSquare");
   $('#bloque-'+bloq).addClass("been-there");
-  $('#bloque-'+bloq).addClass("toy-aca");
+  color = stepNumba/5.6;
+  //console.log("hsl("+Math.floor(color)+",100%,50%)");
+  $('#bloque-'+bloq).css("background-color","hsl("+Math.floor(color)+",100%,50%)");
 }
 
 //Creates an element X times inside another element
@@ -216,9 +226,9 @@ function repeater(cantidad) {
   }
 }
 
-
-function go() {
-  var vamo = setInterval(function() { nextSquare() }, 50);
+function stahp() {
+  clearInterval(goInterval);
+  console.log("STAHPPED");
 }
 
 //In the beginning...
@@ -229,10 +239,9 @@ function init() {
   markRoute(center,newSpiral)//Mark the board using X square as starting point and Y route
   currentBloq(center)//Set current position based on starting bloq
   $('#next').on('click', function() {
-    go()
+    goInterval = setInterval(function() { nextSquare() }, 50);
   })
   $('#stop').on('click', function() {
-    clearInterval(vamo);
-    console.log("STAHPPED");
+    stahp()
   })
 }

@@ -9,11 +9,9 @@
   font-size: 0.5em;
   color: #333;
 }
-.been-there {
-  /*background-color: darkgreen;*/
-}
-.toy-aca {
-  background-color: darkblue;
+#bloque-1273 {
+  color:black !important;
+  background-color: white !important;
 }
 html {
   background-color: black !important;

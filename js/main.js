@@ -232,6 +232,8 @@ function moveToSquare(square) {
 function currentBloq(bloq) {
   currentPosition = bloq
   $('#bloque-'+bloq).addClass("been-there");
+  $('#bloque-'+bloq).addClass("cubo");
+  $('#bloque-'+bloq).addClass("cubo-up");
   color = stepNumba/5.6;
   //console.log("hsl("+Math.floor(color)+",100%,50%)");
   $('#bloque-'+bloq).css("background-color","hsl("+Math.floor(color)+",100%,50%)");

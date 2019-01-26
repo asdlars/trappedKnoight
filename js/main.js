@@ -172,7 +172,13 @@ function nextSquare() {
   sanitizePossibleSquares(possibleSquares)
   removeVisitedSquares(possibleSquares)
   nextPos = getLowestSquare()
-  moveToSquare(nextPos)
+  try {
+    moveToSquare(nextPos)
+  }
+  catch(err) {
+    stahp()
+    throw "Oh noes! am I trapped?!"
+  }
 }
 
 function getLowestSquare() {

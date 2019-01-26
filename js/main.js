@@ -1,14 +1,15 @@
-// TODO: Throw error "I'm trapped!"
+// TODO:
 // Speed selector
 // isometric field with colored cubes poping up
 // calculate farthest travel from center
 
 //Config
 config = {
-  gridWidth: 61,
-  gridHeight: 61,
+  gridWidth: 9,
+  gridHeight: 9,
   maxSteps: 2015,
-  maxSquare: 5000
+  maxSquare: 5000,
+  minSquare: -1
 }
 
 //board vars

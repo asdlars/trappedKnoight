@@ -1,6 +1,5 @@
 // TODO:
 // Speed selector
-// isometric field with colored cubes poping up
 // calculate farthest travel from center
 
 //Config

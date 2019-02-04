@@ -118,7 +118,8 @@ function markRoute(start,route) {
   for (var i=0;i<route.length;i++) {
     currBloq = route[i](currBloq)
     //$('#bloque-'+currBloq).text((bloqNum+1).toString())
-    $('#bloque-'+currBloq).attr("square",(bloqNum+1).toString())
+    //$('#bloque-'+currBloq).attr("square",(bloqNum+1).toString())
+    $(document.getElementById('bloque-'+currBloq)).attr("square",(bloqNum+1).toString())
     bloqNum++
   }
 }
@@ -140,6 +141,7 @@ function getPossibleBlocks() {
 
 function getPossibleSquares() {
   possibleSquares = [
+    /*
     $('#bloque-'+horseMove(down,left)).attr("square"),
     $('#bloque-'+horseMove(down,right)).attr("square"),
     $('#bloque-'+horseMove(up,left)).attr("square"),
@@ -148,20 +150,32 @@ function getPossibleSquares() {
     $('#bloque-'+horseMove(right,down)).attr("square"),
     $('#bloque-'+horseMove(left,up)).attr("square"),
     $('#bloque-'+horseMove(left,down)).attr("square")
+    */
+    $(document.getElementById("bloque-"+horseMove(down,left))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(down,left))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(down,right))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(up,left))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(up,right))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(right,up))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(right,down))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(left,up))).attr("square"),
+    $(document.getElementById("bloque-"+horseMove(left,down))).attr("square")
   ]
   return possibleSquares
 }
 
 function sanitizePossibleSquares(arr) {
   for (var i = 0; i < arr.length; i++) {
-    arr[i] = $('[square='+arr[i]+']').length ? arr[i] : arr[i]=config.maxSquare
+    //arr[i] = $('[square='+arr[i]+']').length ? arr[i] : arr[i]=config.maxSquare
+    arr[i] = $(document.querySelectorAll('[square="'+arr[i]+'"]')).length ? arr[i] : arr[i]=config.maxSquare
   }
   //console.log("quedaron :: ",arr);
 }
 
 function removeVisitedSquares(arr) {
   for (var i = 0; i < arr.length; i++) {
-    arr[i] = $('[square='+arr[i]+']').hasClass('been-there') ? arr[i]=config.maxSquare : arr[i]
+    //arr[i] = $('[square='+arr[i]+']').hasClass('been-there') ? arr[i]=config.maxSquare : arr[i]
+    arr[i] = $(document.querySelectorAll('[square="'+arr[i]+'"]')).hasClass('been-there') ? arr[i]=config.maxSquare : arr[i]
   }
   //console.log("quedaron :: ",arr);
 }
@@ -206,12 +220,14 @@ function getHighestSquare() {
 }
 
 function getSquareFormBloq(bloq) {
-  square = $('#bloque-'+bloq).attr("square");
+  //square = $('#bloque-'+bloq).attr("square");
+  square = $(document.getElementById('bloque-'+bloq)).attr("square");
   return square
 }
 
 function getBloqFromSquare(square) {
-  bloq = $('[square='+square+']').attr('id').replace('bloque-','');
+  //bloq = $('[square='+square+']').attr('id').replace('bloque-','');
+  bloq = $(document.querySelectorAll('[square="'+square+'"]')).attr('id').replace('bloque-','');
   return bloq
 }
 
@@ -223,26 +239,38 @@ function moveToSquare(square) {
   currentPosition = nuPosition
   currentBloq(nuPosition)
   stepNumba++
+  /*
   $('#move').text(stepNumba)
   $('#currentNum').text(square)
+  */
+  $(document.getElementById('move')).text(stepNumba)
+  $(document.getElementById('currentNum')).text(square)
+
   //console.log("Now we are on :: ",square);
 }
 
 function currentBloq(bloq) {
   currentPosition = bloq
+  /*
   $('#bloque-'+bloq).addClass("been-there");
   $('#bloque-'+bloq).addClass("cubo");
   $('#bloque-'+bloq).addClass("cubo-up");
+  */
+  $(document.getElementById('bloque-'+bloq)).addClass("been-there");
+  $(document.getElementById('bloque-'+bloq)).addClass("cubo");
+  $(document.getElementById('bloque-'+bloq)).addClass("cubo-up");
   color = stepNumba/5.6;
   //console.log("hsl("+Math.floor(color)+",100%,50%)");
-  $('#bloque-'+bloq).css("background-color","hsl("+Math.floor(color)+",100%,50%)");
+  //$('#bloque-'+bloq).css("background-color","hsl("+Math.floor(color)+",100%,50%)");
+  $(document.getElementById('bloque-'+bloq)).css("background-color","hsl("+Math.floor(color)+",100%,50%)");
 }
 
 //Creates an element X times inside another element
 // TODO: Add argument for parameter allowing to select where to repeate and what to repeat
 function repeater(cantidad) {
   for (var i=0;i<cantidad;i++) {
-    $('#canvas').append("<div class='bloque' id='bloque-"+i+"'></div>")
+    //$('#canvas').append("<div class='bloque' id='bloque-"+i+"'></div>")
+    $(document.getElementById('canvas')).append("<div class='bloque' id='bloque-"+i+"'></div>")
   }
 }
 
@@ -253,15 +281,15 @@ function stahp() {
 
 //In the beginning...
 function init() {
-  $('#canvas').css("width", config.gridWidth*20+"px");
+  $(document.getElementById('canvas')).css("width", config.gridWidth*20+"px");
   repeater(config.gridHeight*config.gridWidth)//Creates a grid according to config
   makeSpiral("clockwise")//Creates new clockwise spiral "newSpiral"
   markRoute(center,newSpiral)//Mark the board using X square as starting point and Y route
   currentBloq(center)//Set current position based on starting bloq
-  $('#next').on('click', function() {
+  $(document.getElementById('next')).on('click', function() {
     goInterval = setInterval(function() { nextSquare() }, 50);
   })
-  $('#stop').on('click', function() {
+  $(document.getElementById('stop')).on('click', function() {
     stahp()
   })
 }
